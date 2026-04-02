@@ -19,9 +19,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the requirements
-COPY requirements.txt $APP/
-COPY frontend/package*.json $APP/frontend/
-COPY frontend $APP/frontend
+COPY server/requirements.txt $APP/requirements.txt
+COPY server/frontend/package*.json $APP/frontend/
+COPY server/frontend $APP/frontend
 
 RUN pip3 install -r requirements.txt \
     && cd frontend \
@@ -29,7 +29,7 @@ RUN pip3 install -r requirements.txt \
     && CI=false npm run build
 
 # Copy the rest of the files
-COPY . $APP
+COPY server $APP
 
 EXPOSE 8000
 
