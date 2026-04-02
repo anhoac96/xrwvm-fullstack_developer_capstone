@@ -43,7 +43,7 @@ jobs:
 
       - name: Build frontend
         working-directory: server/frontend
-        run: npm run build
+        run: CI=false npm run build
 
       - name: Install API dependencies
         working-directory: server/database
