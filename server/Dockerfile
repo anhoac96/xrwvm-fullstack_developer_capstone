@@ -8,10 +8,24 @@ ENV APP=/app
 # Change the workdir.
 WORKDIR $APP
 
-# Install the requirements
-COPY requirements.txt $APP
+# Install system dependencies for frontend build
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install -r requirements.txt
+# Install the requirements
+COPY requirements.txt frontend/package*.json $APP/
+COPY frontend $APP/frontend
+
+RUN pip3 install -r requirements.txt \
+    && cd frontend \
+    && npm ci \
+    && CI=false npm run build
 
 # Copy the rest of the files
 COPY . $APP
