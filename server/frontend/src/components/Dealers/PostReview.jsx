@@ -13,13 +13,11 @@ const PostReview = () => {
   const [date, setDate] = useState("");
   const [carmodels, setCarmodels] = useState([]);
 
-  let curr_url = window.location.href;
-  let root_url = curr_url.substring(0,curr_url.indexOf("postreview"));
-  let params = useParams();
-  let id =params.id;
-  let dealer_url = root_url+`djangoapp/dealer/${id}`;
-  let review_url = root_url+`djangoapp/add_review`;
-  let carmodels_url = root_url+`djangoapp/get_cars`;
+  const params = useParams();
+  const id = params.id;
+  const dealer_url = `${window.location.origin}/djangoapp/dealer/${id}`;
+  const review_url = `${window.location.origin}/djangoapp/add_review`;
+  const carmodels_url = `${window.location.origin}/djangoapp/get_cars`;
 
   const postreview = async ()=>{
     let name = sessionStorage.getItem("firstname")+" "+sessionStorage.getItem("lastname");
@@ -32,11 +30,11 @@ const PostReview = () => {
       return;
     }
 
-    let model_split = model.split(" ");
-    let make_chosen = model_split[0];
-    let model_chosen = model_split[1];
+    const model_split = model.split(" ");
+    const make_chosen = model_split[0];
+    const model_chosen = model_split.slice(1).join(" ");
 
-    let jsoninput = JSON.stringify({
+    const jsoninput = JSON.stringify({
       "name": name,
       "dealership": id,
       "review": review,
@@ -58,10 +56,10 @@ const PostReview = () => {
 
   const json = await res.json();
   if (json.status === 200) {
-      window.location.href = window.location.origin+"/dealer/"+id;
+      window.location.href = `${window.location.origin}/dealer/${id}`;
   }
 
-  }
+  };
   const get_dealer = async ()=>{
     const res = await fetch(dealer_url, {
       method: "GET"
@@ -69,11 +67,12 @@ const PostReview = () => {
     const retobj = await res.json();
     
     if(retobj.status === 200) {
-      let dealerobjs = Array.from(retobj.dealer)
-      if(dealerobjs.length > 0)
-        setDealer(dealerobjs[0])
+      const dealerobjs = Array.from(retobj.dealer);
+      if(dealerobjs.length > 0) {
+        setDealer(dealerobjs[0]);
+      }
     }
-  }
+  };
 
   const get_cars = async ()=>{
     const res = await fetch(carmodels_url, {
@@ -81,9 +80,9 @@ const PostReview = () => {
     });
     const retobj = await res.json();
     
-    let carmodelsarr = Array.from(retobj.CarModels)
-    setCarmodels(carmodelsarr)
-  }
+    const carmodelsarr = Array.from(retobj.CarModels);
+    setCarmodels(carmodelsarr);
+  };
   useEffect(() => {
     get_dealer();
     get_cars();
@@ -101,16 +100,16 @@ const PostReview = () => {
       </div>
       <div className='input_field'>
       Car Make 
-      <select name="cars" id="cars" onChange={(e) => setModel(e.target.value)}>
-      <option value="" selected disabled hidden>Choose Car Make and Model</option>
-      {carmodels.map(carmodel => (
-          <option value={carmodel.CarMake+" "+carmodel.CarModel}>{carmodel.CarMake} {carmodel.CarModel}</option>
+      <select name="cars" id="cars" defaultValue="" onChange={(e) => setModel(e.target.value)}>
+      <option value="" disabled hidden>Choose Car Make and Model</option>
+      {carmodels.map((carmodel) => (
+          <option key={`${carmodel.CarMake}-${carmodel.CarModel}`} value={`${carmodel.CarMake} ${carmodel.CarModel}`}>{carmodel.CarMake} {carmodel.CarModel}</option>
       ))}
       </select>        
       </div >
 
       <div className='input_field'>
-      Car Year <input type="int" onChange={(e) => setYear(e.target.value)} max={2023} min={2015}/>
+      Car Year <input type="number" onChange={(e) => setYear(e.target.value)} max={2026} min={2015}/>
       </div>
 
       <div>

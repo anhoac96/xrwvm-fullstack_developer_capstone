@@ -104,11 +104,18 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.pydeps/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Node
+node_modules/
+
+# Local runtime artifacts
+runtime/
 
 # Spyder project settings
 .spyderproject

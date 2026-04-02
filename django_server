@@ -1,0 +1,5 @@
+Watching for file changes with StatReloader
+[02/Apr/2026 08:55:09] "GET / HTTP/1.1" 200
+[02/Apr/2026 08:55:10] "GET /about/ HTTP/1.1" 200
+[02/Apr/2026 08:55:10] "GET /contact/ HTTP/1.1" 200
+[02/Apr/2026 08:55:11] "GET /djangoapp/get_cars HTTP/1.1" 200

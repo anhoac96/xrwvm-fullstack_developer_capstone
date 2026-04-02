@@ -1,9 +1,21 @@
 from flask import Flask
 from nltk.sentiment import SentimentIntensityAnalyzer
 import json
+from pathlib import Path
+import zipfile
+
 app = Flask("Sentiment Analyzer")
 
-sia = SentimentIntensityAnalyzer()
+BASE_DIR = Path(__file__).resolve().parent
+LEXICON_ARCHIVE = BASE_DIR / "sentiment" / "vader_lexicon.zip"
+LEXICON_DIR = BASE_DIR / "sentiment" / "vader_lexicon"
+LEXICON_FILE = LEXICON_DIR / "vader_lexicon.txt"
+
+if not LEXICON_FILE.exists() and LEXICON_ARCHIVE.exists():
+    with zipfile.ZipFile(LEXICON_ARCHIVE, "r") as archive:
+        archive.extractall(BASE_DIR / "sentiment")
+
+sia = SentimentIntensityAnalyzer(lexicon_file=LEXICON_FILE.as_uri())
 
 
 @app.get('/')
@@ -32,4 +44,4 @@ def analyze_sentiment(input_txt):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5050)
