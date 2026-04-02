@@ -19,7 +19,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the requirements
-COPY requirements.txt frontend/package*.json $APP/
+COPY requirements.txt $APP/
+COPY frontend/package*.json $APP/frontend/
 COPY frontend $APP/frontend
 
 RUN pip3 install -r requirements.txt \
